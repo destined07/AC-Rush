@@ -81,6 +81,7 @@ app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
   res.render('index');
 });
 
