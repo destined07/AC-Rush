@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - AC-Rush</title>
+    <meta name="description" content="Get in touch with the AC-Rush team. We'd love to hear from you.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/profile" class="nav-btn nav-btn-outline">Profile</a>
+                    <% } else { %>
+                        <a href="/login" class="nav-btn nav-btn-outline">Log In</a>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-hero">
+                <h1>Contact Us</h1>
+                <p>Have a question, suggestion, or found a bug? We'd love to hear from you.</p>
+            </div>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">@</div>
+                    <div class="contact-detail">
+                        <h3>Email</h3>
+                        <p>support@acrush.dev</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">&lt;/&gt;</div>
+                    <div class="contact-detail">
+                        <h3>GitHub</h3>
+                        <p>github.com/acrush</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">&#9993;</div>
+                    <div class="contact-detail">
+                        <h3>Feedback</h3>
+                        <p>Report issues or suggest features via GitHub Issues</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section" style="text-align: center; margin-top: 48px;">
+                <p>
+                    AC-Rush is an open platform dedicated to making competitive programming and DSA practice accessible to everyone. 
+                    Your feedback helps us improve.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AC-Rush. Master algorithms, one problem at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>

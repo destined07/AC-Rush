@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Admin Login - AC-Rush</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+    }
+
+    .login-box {
+      background: #1a1f3a;
+      border: 1px solid #00d4ff;
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+    }
+
+    .login-box h1 {
+      color: #00d4ff;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #a0aec0;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      background: #0a0e27;
+      border: 1px solid #2d3748;
+      border-radius: 6px;
+      color: #e2e8f0;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #00d4ff;
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    }
+
+    .error-message {
+      background: #742a2a;
+      color: #feb2b2;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #f56565;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 12px;
+      background: #00d4ff;
+      color: #0a0e27;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .login-button:hover {
+      background: #00a8cc;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .info-box {
+      background: #2d3748;
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 20px;
+      color: #a0aec0;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .info-box strong {
+      color: #00d4ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h1>Admin Login</h1>
+      
+      <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/admin/login">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="login-button">Login</button>
+      </form>
+
+      <div class="info-box">
+        <strong>Demo Credentials:</strong><br>
+        Username: <code>admin</code><br>
+        Password: <code>admin</code>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

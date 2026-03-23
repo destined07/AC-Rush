@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - AC-Rush</title>
+    <meta name="description" content="AC-Rush is a premium platform for competitive programming and DSA practice. Learn, grow, and prepare for technical interviews.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/profile" class="nav-btn nav-btn-outline">Profile</a>
+                    <% } else { %>
+                        <a href="/login" class="nav-btn nav-btn-outline">Log In</a>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-hero">
+                <h1>About AC-Rush</h1>
+                <p>A premium platform designed for those who want to master the art of problem solving</p>
+            </div>
+
+            <div class="content-section">
+                <h2>What We Do</h2>
+                <p>
+                    AC-Rush is a competitive programming and DSA practice platform built for serious learners. We provide carefully curated problems spanning arrays, trees, graphs, dynamic programming, and more — designed to progressively challenge and improve your skills.
+                </p>
+                <p>
+                    Whether you're preparing for technical interviews at top companies, training for programming contests like ICPC and Codeforces, or simply looking to sharpen your problem-solving abilities — AC-Rush offers the focused environment you need.
+                </p>
+            </div>
+
+            <div class="content-section">
+                <h2>Our Purpose</h2>
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h3>Deliberate Learning</h3>
+                        <p>Every problem is selected and categorized to help you build skills systematically. Progress from fundamentals to advanced algorithms at your own pace.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Contest Preparation</h3>
+                        <p>Train with problems that mirror the difficulty and style of real competitive programming contests. Build speed and accuracy under pressure.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Interview Readiness</h3>
+                        <p>Master the data structures and algorithms that top tech companies ask about. Build confidence through consistent, structured practice.</p>
+                    </div>
+                    <div class="content-card">
+                        <h3>Growth Mindset</h3>
+                        <p>Track your progress, challenge yourself with harder problems, and watch your problem-solving intuition develop over time.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Technology</h2>
+                <p>
+                    AC-Rush is built with modern web technologies and supports code execution in Python, C++, and Java. Our AI-powered hints and explanations help you learn from every problem, not just solve it.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AC-Rush. Master algorithms, one problem at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <title>Submissions - AC-Rush Admin</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      background: #0a0e27;
+      color: #e2e8f0;
+    }
+
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    .admin-header h1 {
+      color: #00d4ff;
+      font-size: 32px;
+      margin: 0;
+    }
+
+    .back-button {
+      padding: 8px 16px;
+      background: #2d3748;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: #4a5568;
+    }
+
+    .submissions-table {
+      background: #1a1f3a;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #0a0e27;
+    }
+
+    th {
+      padding: 15px 20px;
+      text-align: left;
+      color: #00d4ff;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    td {
+      padding: 15px 20px;
+      border-bottom: 1px solid #2d3748;
+      color: #e2e8f0;
+    }
+
+    tbody tr:hover {
+      background: #252a3a;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .status-accepted {
+      background: #48bb78;
+      color: white;
+    }
+
+    .status-wrong-answer {
+      background: #f56565;
+      color: white;
+    }
+
+    .status-runtime-error {
+      background: #ed8936;
+      color: white;
+    }
+
+    .status-time-limit {
+      background: #ecc94b;
+      color: #000;
+    }
+
+    .status-running {
+      background: #4299e1;
+      color: white;
+    }
+
+    .status-pending {
+      background: #9f7aea;
+      color: white;
+    }
+
+    .language-badge {
+      padding: 4px 12px;
+      background: #2d3748;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #a0aec0;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pagination a,
+    .pagination span {
+      padding: 8px 12px;
+      background: #2d3748;
+      color: #e2e8f0;
+      border-radius: 4px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .pagination a:hover {
+      background: #4a5568;
+    }
+
+    .pagination .active {
+      background: #00d4ff;
+      color: #0a0e27;
+    }
+
+    .btn-view {
+      padding: 6px 12px;
+      background: transparent;
+      color: #00d4ff;
+      border: 1px solid #00d4ff;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-view:hover {
+      background: #00d4ff;
+      color: #0a0e27;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-container {
+      background: #1a1f3a;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #2d3748;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #00d4ff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-body {
+      padding: 0;
+      overflow-y: auto;
+      flex: 1;
+      background: #0a0e27;
+    }
+
+    .code-display {
+      background: #0a0e27;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e2e8f0;
+      white-space: pre;
+      margin: 0;
+      tab-size: 4;
+      overflow-x: auto;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #a0aec0;
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .close-btn:hover {
+      color: #e2e8f0;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-copy {
+      padding: 6px 12px;
+      background: #2d3748;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-copy:hover {
+      background: #4a5568;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Recent Submissions</h1>
+      <a href="/admin/dashboard" class="back-button">← Back to Dashboard</a>
+    </div>
+
+    <div class="submissions-table">
+      <% if (submissions.length===0) { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">📝</div>
+          <p>No submissions yet</p>
+        </div>
+        <% } else { %>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Problem</th>
+                  <th>Language</th>
+                  <th>Status</th>
+                  <th>Tests Passed</th>
+                  <th>Execution Time</th>
+                  <th>Memory</th>
+                  <th>Submitted</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% submissions.forEach(submission=> {
+                  let statusClass = 'status-pending';
+                  if (submission.status === 'Accepted') {
+                  statusClass = 'status-accepted';
+                  } else if (submission.status === 'Wrong Answer') {
+                  statusClass = 'status-wrong-answer';
+                  } else if (submission.status === 'Runtime Error') {
+                  statusClass = 'status-runtime-error';
+                  } else if (submission.status === 'Time Limit Exceeded') {
+                  statusClass = 'status-time-limit';
+                  } else if (submission.status === 'Running') {
+                  statusClass = 'status-running';
+                  }
+                  %>
+                  <tr>
+                    <td>
+                      <strong>
+                        <%= submission.problemId?.title || 'Unknown' %>
+                      </strong>
+                    </td>
+                    <td>
+                      <span class="language-badge">
+                        <%= submission.language %>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="status-badge <%= statusClass %>">
+                        <%= submission.status %>
+                      </span>
+                    </td>
+                    <td>
+                      <%= submission.testsPassed %>/<%= submission.totalTests %>
+                    </td>
+                    <td>
+                      <%= submission.executionTime ? submission.executionTime.toFixed(2) + 'ms' : '-' %>
+                    </td>
+                    <td>
+                      <%= submission.memory ? submission.memory + 'KB' : '-' %>
+                    </td>
+                    <td style="font-size: 12px; color: #a0aec0;">
+                      <% const date=new Date(submission.createdAt); const now=new Date(); const diff=now - date; const
+                        seconds=Math.floor(diff / 1000); const minutes=Math.floor(seconds / 60); const
+                        hours=Math.floor(minutes / 60); const days=Math.floor(hours / 24); let timeStr='' ; if (days> 0)
+                        timeStr = days + 'd ago';
+                        else if (hours > 0) timeStr = hours + 'h ago';
+                        else if (minutes > 0) timeStr = minutes + 'm ago';
+                        else timeStr = 'just now';
+                        %>
+                        <%= timeStr %>
+                    </td>
+                    <td>
+                      <button class="btn-view" data-code="<%= encodeURIComponent(submission.code || '') %>" data-language="<%= submission.language %>" onclick="viewCode(this)">View Code</button>
+                    </td>
+                  </tr>
+                  <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="codeModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>
+          <span>Submission Code</span>
+          <span class="language-badge" id="modalLanguage" style="font-size: 11px; margin-left: 10px;">CPP</span>
+        </h2>
+        <div class="modal-actions">
+          <button class="btn-copy" id="copyBtn" onclick="copyCode()">Copy to Clipboard</button>
+          <button class="close-btn" onclick="closeCodeModal()">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <pre class="code-display" id="modalCodeDisplay"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function viewCode(btn) {
+      const code = decodeURIComponent(btn.getAttribute('data-code'));
+      const language = btn.getAttribute('data-language');
+
+      document.getElementById('modalLanguage').textContent = language;
+      document.getElementById('modalCodeDisplay').textContent = code;
+      document.getElementById('codeModal').style.display = 'flex';
+    }
+
+    function closeCodeModal() {
+      document.getElementById('codeModal').style.display = 'none';
+      document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
+    }
+
+    function copyCode() {
+      const code = document.getElementById('modalCodeDisplay').textContent;
+      navigator.clipboard.writeText(code);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy to Clipboard', 2000);
+    }
+
+    // Close on click outside
+    document.getElementById('codeModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeCodeModal();
+      }
+    });
+  </script>
+</body>
+
+</html>

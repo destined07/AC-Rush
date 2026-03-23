@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problems - AC-Rush</title>
+    <meta name="description" content="Browse and solve coding problems on AC-Rush — competitive programming and DSA practice.">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .hero {
+            text-align: center;
+            margin-bottom: 56px;
+            padding: 48px 20px 0;
+        }
+
+        .hero h1 {
+            font-size: 44px;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ── Filters ── */
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 36px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .filters select,
+        .filters input[type="text"] {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 9px 14px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: var(--font-body);
+            cursor: pointer;
+            transition: var(--transition);
+            outline: none;
+            min-width: 140px;
+        }
+
+        .filters select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8a95' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .filters select:hover,
+        .filters input[type="text"]:hover {
+            border-color: var(--border-hover);
+        }
+
+        .filters select:focus,
+        .filters input[type="text"]:focus {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+        }
+
+        /* ── Problem Grid ── */
+        .problems-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .problem-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .problem-card:hover {
+            border-color: var(--border-hover);
+            background-color: var(--bg-tertiary);
+            transform: translateX(4px);
+        }
+
+        .problem-info {
+            flex: 1;
+        }
+
+        .problem-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .problem-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .difficulty.easy {
+            background-color: rgba(74, 222, 128, 0.12);
+            color: var(--success);
+        }
+
+        .difficulty.medium {
+            background-color: rgba(251, 191, 36, 0.12);
+            color: var(--warning);
+        }
+
+        .difficulty.hard {
+            background-color: rgba(248, 113, 113, 0.12);
+            color: var(--error);
+        }
+
+        .tag {
+            background-color: var(--accent-subtle);
+            color: var(--text-secondary);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .problem-category {
+            color: var(--text-muted);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state p {
+            font-size: 17px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .problem-count {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters select,
+            .filters input[type="text"] {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .problem-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/profile" class="nav-btn nav-btn-outline">Profile</a>
+                    <% } else { %>
+                        <a href="/login" class="nav-btn nav-btn-outline">Log In</a>
+                        <a href="/signup" class="nav-btn nav-btn-primary">Sign Up</a>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="hero">
+                <h1>Master Algorithms, One Problem at a Time</h1>
+                <p>Solve challenging coding problems and sharpen your problem-solving skills with AC-Rush</p>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Difficulty</label>
+                    <select id="difficultyFilter" class="form-input">
+                        <option value="">All</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select id="categoryFilter" class="form-input">
+                        <option value="">All Categories</option>
+                        <option value="Arrays">Arrays</option>
+                        <option value="Strings">Strings</option>
+                        <option value="Trees">Trees</option>
+                        <option value="Graphs">Graphs</option>
+                        <option value="Dynamic Programming">Dynamic Programming</option>
+                        <option value="Sorting">Sorting</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" id="searchInput" class="form-input" placeholder="Search problems...">
+                </div>
+            </div>
+
+            <div id="problemCount" class="problem-count"></div>
+
+            <div class="problems-grid" id="problemsContainer">
+                <div class="loading">Loading problems...</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AC-Rush. Master algorithms, one problem at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        let allProblems = [];
+
+        async function loadProblems() {
+            try {
+                const response = await fetch('/api/problems');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch problems (${response.status})`);
+                }
+                const data = await response.json();
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid problems response');
+                }
+                allProblems = data;
+                filterAndDisplay();
+            } catch (error) {
+                console.error('Error loading problems:', error);
+                document.getElementById('problemsContainer').innerHTML = 
+                    '<div class="empty-state"><p>Failed to load problems. Please refresh the page.</p></div>';
+            }
+        }
+
+        function filterAndDisplay() {
+            const difficulty = document.getElementById('difficultyFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = allProblems.filter(problem => {
+                const matchDifficulty = !difficulty || problem.difficulty === difficulty;
+                const matchCategory = !category || problem.category === category;
+                const matchSearch = !search || 
+                    problem.title.toLowerCase().includes(search) ||
+                    (problem.tags && problem.tags.some(tag => tag.toLowerCase().includes(search)));
+                
+                return matchDifficulty && matchCategory && matchSearch;
+            });
+
+            const container = document.getElementById('problemsContainer');
+            const countEl = document.getElementById('problemCount');
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No problems match your filters</p></div>';
+                countEl.textContent = '';
+                return;
+            }
+
+            countEl.textContent = `${filtered.length} problem${filtered.length !== 1 ? 's' : ''} found`;
+
+            container.innerHTML = filtered.map(problem => `
+                <a href="/problem/${problem._id}" class="problem-card">
+                    <div class="problem-info">
+                        <div class="problem-title">${problem.title}</div>
+                        <div class="problem-meta">
+                            <span class="difficulty ${problem.difficulty.toLowerCase()}">${problem.difficulty}</span>
+                            ${problem.tags ? problem.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                    <span class="problem-category">${problem.category}</span>
+                </a>
+            `).join('');
+        }
+
+        document.getElementById('difficultyFilter').addEventListener('change', filterAndDisplay);
+        document.getElementById('categoryFilter').addEventListener('change', filterAndDisplay);
+        document.getElementById('searchInput').addEventListener('input', filterAndDisplay);
+
+        loadProblems();
+
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>
