@@ -7,6 +7,57 @@ dotenv.config();
 
 export const sampleProblems = [
   {
+    title: '67 - Soham\'s Magical Number',
+    description: 'Soham believes that the number 67 has mysterious powers. He claims that if you take any positive integer n, multiply it by 67, and then find the sum of digits of the result, you unlock the secret of the universe (or at least pass this test case).\n\nGiven a positive integer n, print the sum of digits of (n * 67).\n\nSoham swears this problem will make you mass in competitive programming. Trust him.\n\nInput format:\n- A single positive integer n\n\nOutput format:\n- A single integer (sum of digits of n * 67)',
+    difficulty: 'Easy',
+    category: 'Math',
+    tags: ['Math', 'Soham Special'],
+    constraints: '1 <= n <= 10^6',
+    examples: [
+      { input: '1', output: '13', isExample: true },
+      { input: '2', output: '8', isExample: true },
+      { input: '10', output: '4', isExample: true }
+    ],
+    hiddenTestCases: [
+      { input: '3', output: '3', isExample: false },
+      { input: '100', output: '13', isExample: false },
+      { input: '67', output: '17', isExample: false },
+      { input: '999', output: '21', isExample: false }
+    ],
+    starterCode: {
+      python: 'n = int(input())\nresult = n * 67\ndigit_sum = sum(int(d) for d in str(result))\nprint(digit_sum)\n',
+      cpp: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    long long result = n * 67;\n    int sum = 0;\n    string s = to_string(result);\n    for (char c : s) sum += c - \'0\';\n    cout << sum << endl;\n    return 0;\n}\n',
+      java: 'import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long n = sc.nextLong();\n        long result = n * 67;\n        int sum = 0;\n        for (char c : String.valueOf(result).toCharArray()) sum += c - \'0\';\n        System.out.println(sum);\n    }\n}\n'
+    }
+  },
+  {
+    title: 'Skibidi Brainrot - Tung Tung Sahur\'s Challenge',
+    description: 'Tung Tung Sahur is on a mission. Every morning he wakes up and goes "tung tung tung" exactly n times to wake up the entire neighborhood for sahur.\n\nBut here\'s the twist: if n is divisible by 3, he yells "SKIBIDI" instead. If n is divisible by 5, he yells "BRAINROT". If n is divisible by both 3 and 5, he achieves ultimate form and yells "SKIBIDI BRAINROT". Otherwise, he just tungs the number.\n\nGiven a positive integer n, print what Tung Tung Sahur yells.\n\nThis problem was created under the supervision of Tung Tung Sahur himself. No braincells were harmed in the making.\n\nInput format:\n- A single positive integer n\n\nOutput format:\n- "SKIBIDI BRAINROT" if n is divisible by both 3 and 5\n- "SKIBIDI" if n is divisible by 3 only\n- "BRAINROT" if n is divisible by 5 only\n- The number n itself otherwise',
+    difficulty: 'Easy',
+    category: 'Logic',
+    tags: ['Logic', 'Brainrot Special'],
+    constraints: '1 <= n <= 10^9',
+    examples: [
+      { input: '3', output: 'SKIBIDI', isExample: true },
+      { input: '5', output: 'BRAINROT', isExample: true },
+      { input: '15', output: 'SKIBIDI BRAINROT', isExample: true },
+      { input: '7', output: '7', isExample: true }
+    ],
+    hiddenTestCases: [
+      { input: '1', output: '1', isExample: false },
+      { input: '9', output: 'SKIBIDI', isExample: false },
+      { input: '10', output: 'BRAINROT', isExample: false },
+      { input: '30', output: 'SKIBIDI BRAINROT', isExample: false },
+      { input: '67', output: '67', isExample: false },
+      { input: '45', output: 'SKIBIDI BRAINROT', isExample: false }
+    ],
+    starterCode: {
+      python: 'n = int(input())\nif n % 15 == 0:\n    print("SKIBIDI BRAINROT")\nelif n % 3 == 0:\n    print("SKIBIDI")\nelif n % 5 == 0:\n    print("BRAINROT")\nelse:\n    print(n)\n',
+      cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    if (n % 15 == 0) cout << "SKIBIDI BRAINROT" << endl;\n    else if (n % 3 == 0) cout << "SKIBIDI" << endl;\n    else if (n % 5 == 0) cout << "BRAINROT" << endl;\n    else cout << n << endl;\n    return 0;\n}\n',
+      java: 'import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long n = sc.nextLong();\n        if (n % 15 == 0) System.out.println("SKIBIDI BRAINROT");\n        else if (n % 3 == 0) System.out.println("SKIBIDI");\n        else if (n % 5 == 0) System.out.println("BRAINROT");\n        else System.out.println(n);\n    }\n}\n'
+    }
+  },
+  {
     title: 'Two Sum',
     description: 'Given an array of integers and a target, find two numbers that add up to the target and print their 0-based indices.\n\nInput format:\n- First line: space-separated integers (the array)\n- Second line: an integer (the target)\n\nOutput format:\n- Two space-separated indices',
     difficulty: 'Easy',
