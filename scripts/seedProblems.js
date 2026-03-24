@@ -7,7 +7,7 @@ dotenv.config();
 
 export const sampleProblems = [
   {
-    title: '67 - Soham\'s Magical Number',
+    title: '67 - Magical Number',
     description: 'Soham believes that the number 67 has mysterious powers. He claims that if you take any positive integer n, multiply it by 67, and then find the sum of digits of the result, you unlock the secret of the universe (or at least pass this test case).\n\nGiven a positive integer n, print the sum of digits of (n * 67).\n\nSoham swears this problem will make you mass in competitive programming. Trust him.\n\nInput format:\n- A single positive integer n\n\nOutput format:\n- A single integer (sum of digits of n * 67)',
     difficulty: 'Easy',
     category: 'Math',
