@@ -16,13 +16,13 @@ export const sampleProblems = [
     examples: [
       { input: '1', output: '13', isExample: true },
       { input: '2', output: '8', isExample: true },
-      { input: '10', output: '4', isExample: true }
+      { input: '5', output: '11', isExample: true }
     ],
     hiddenTestCases: [
       { input: '3', output: '3', isExample: false },
       { input: '100', output: '13', isExample: false },
-      { input: '67', output: '17', isExample: false },
-      { input: '999', output: '21', isExample: false }
+      { input: '67', output: '25', isExample: false },
+      { input: '999', output: '27', isExample: false }
     ],
     starterCode: {
       python: 'n = int(input())\nresult = n * 67\ndigit_sum = sum(int(d) for d in str(result))\nprint(digit_sum)\n',
@@ -70,7 +70,7 @@ export const sampleProblems = [
     ],
     hiddenTestCases: [
       { input: '3 3\n6', output: '0 1', isExample: false },
-      { input: '1 5 3 7\n8', output: '1 2', isExample: false },
+      { input: '1 5 3 7\n8', output: '0 3', isExample: false },
       { input: '4 2 9 1\n3', output: '1 3', isExample: false }
     ],
     starterCode: {
