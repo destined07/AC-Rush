@@ -48,8 +48,3 @@ A web-based platform for solving algorithmic coding problems with real-time code
    node scripts/seedProblems.js
    ```
 
-## Admin Access
-
-Default admin credentials: `admin` / `admin`
-
-Admin panel: `http://localhost:3000/admin/login`
