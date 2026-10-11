@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem - AC-Rush</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        main {
+            padding: 24px 0;
+            min-height: calc(100vh - 140px);
+        }
+
+        .back-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--accent);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        .problem-panel, .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .panel-header {
+            background-color: var(--bg-tertiary);
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.02em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .editor-body {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .problem-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .difficulty.easy {
+            background-color: rgba(74, 222, 128, 0.12);
+            color: var(--success);
+        }
+
+        .difficulty.medium {
+            background-color: rgba(251, 191, 36, 0.12);
+            color: var(--warning);
+        }
+
+        .difficulty.hard {
+            background-color: rgba(248, 113, 113, 0.12);
+            color: var(--error);
+        }
+
+        .problem-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .problem-description {
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+
+        .problem-description pre, .example-card pre {
+            background-color: var(--bg-primary) !important;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            overflow-x: auto;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .problem-description code, .problem-description pre, .example-card {
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: var(--accent-subtle);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+            font-family: var(--font-body);
+        }
+        
+        .problem-description pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--text-secondary);
+            color: var(--bg-primary);
+        }
+
+        .example-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        kbd {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        .example-label {
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+
+        .io-block {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+            font-size: 13px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .io-section:last-child .io-block {
+            margin-bottom: 0;
+        }
+
+        .io-label {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+
+        .editor-controls {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .language-select {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-family: var(--font-body);
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .language-select:focus {
+            border-color: rgba(255,255,255,0.25);
+        }
+
+        .info-banner {
+            background-color: var(--accent-subtle);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            font-size: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-editor-container {
+            display: flex;
+            background-color: var(--bg-primary);
+            border-top: 1px solid var(--border);
+            flex: 1;
+            min-height: 200px;
+            position: relative;
+            resize: vertical;
+            overflow: auto;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .code-editor-container:focus-within {
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+        }
+
+        #lineNumbers {
+            background-color: var(--bg-tertiary);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            padding: 16px 8px;
+            text-align: right;
+            user-select: none;
+            border-right: 1px solid var(--border);
+            min-width: 40px;
+            line-height: inherit;
+        }
+
+        #codeEditor {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background-color: transparent;
+            color: var(--text-primary);
+            border: none;
+            padding: 16px;
+            resize: none;
+            flex: 1;
+            tab-size: 4;
+            outline: none;
+            line-height: inherit;
+            white-space: pre;
+            overflow: hidden;
+        }
+
+        .stdin-section {
+            border-top: 1px solid var(--border);
+            padding: 8px 16px;
+        }
+
+        .stdin-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        #stdinInput {
+            width: 100%;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px;
+            resize: vertical;
+            min-height: 60px;
+            max-height: 120px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        #stdinInput:focus {
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.04);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font-body);
+            transition: var(--transition);
+            flex: 1;
+            min-width: 100px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit {
+            background-color: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            opacity: 0.85;
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-run {
+            background-color: var(--success);
+            color: var(--bg-primary);
+        }
+
+        .btn-run:hover:not(:disabled) {
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2);
+        }
+
+        .btn-hint {
+            background-color: var(--warning);
+            color: var(--bg-primary);
+        }
+
+        .btn-hint:hover:not(:disabled) {
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+        }
+
+        .btn-explain {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-explain:hover:not(:disabled) {
+            border-color: var(--border-hover);
+            background-color: var(--accent-subtle);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .output-section {
+            border-top: 1px solid var(--border);
+            padding: 12px 16px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .output {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .output.success {
+            border-left: 3px solid var(--success);
+        }
+
+        .output.error {
+            border-left: 3px solid var(--error);
+            color: var(--error);
+        }
+
+        .output.warning {
+            border-left: 3px solid var(--warning);
+            color: var(--warning);
+        }
+
+        .output.pending {
+            border-left: 3px solid var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .status-accepted {
+            background-color: rgba(74, 222, 128, 0.12);
+            color: var(--success);
+        }
+
+        .status-wrong {
+            background-color: rgba(248, 113, 113, 0.12);
+            color: var(--error);
+        }
+
+        .status-pending {
+            background-color: rgba(251, 191, 36, 0.12);
+            color: var(--warning);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border);
+            border-top-color: var(--text-secondary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ai-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .ai-container button {
+            min-width: 80px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            width: auto;
+            height: auto;
+            padding: 0;
+            min-width: 0;
+            flex: none;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-right: 24px;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        @media (max-width: 1024px) {
+            .workspace {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .problem-panel, .editor-panel {
+                max-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/profile" class="nav-btn nav-btn-outline">Profile</a>
+                    <% } else { %>
+                        <a href="/login" class="nav-btn nav-btn-outline">Log In</a>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/" class="back-btn">← Back to Problems</a>
+
+            <div class="workspace">
+                <div class="problem-panel">
+                    <div class="panel-header">Problem Details</div>
+                    <div class="panel-content" id="problemContent">
+                        <div style="text-align: center; color: var(--text-muted);">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="editor-panel">
+                    <div class="panel-header">Code Editor</div>
+                    <div class="editor-body">
+                        <div class="info-banner">
+                            Write your <strong>full program</strong> here (include main function). Read from <strong>stdin</strong>, print to <strong>stdout</strong>.
+                        </div>
+                        <div class="editor-controls">
+                            <select id="languageSelect" class="language-select">
+                                <option value="python">Python</option>
+                                <option value="cpp">C++</option>
+                                <option value="java">Java</option>
+                            </select>
+                        </div>
+                        <div class="code-editor-container">
+                            <div id="lineNumbers">1</div>
+                            <textarea id="codeEditor" spellcheck="false" wrap="off" placeholder="Write your full program here (include main function)"></textarea>
+                        </div>
+
+                        <div class="stdin-section">
+                            <div class="stdin-label">Custom Input (stdin) — used only for "Run Code"</div>
+                            <textarea id="stdinInput" placeholder="Enter your test input here..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="buttons">
+                        <button class="btn-run" id="btnRun" onclick="runCode()">Run Code</button>
+                        <button class="btn-submit" id="btnSubmit" onclick="submitCode()">Submit</button>
+                        <div class="ai-container">
+                            <button class="btn-hint" onclick="getHint()">Hint</button>
+                            <button class="btn-explain" onclick="explainCode()">Explain</button>
+                        </div>
+                    </div>
+
+                    <div id="outputSection" class="output-section" style="display: none;">
+                        <div id="output" class="output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-title" id="modalTitle">Modal</div>
+            <div class="modal-text" id="modalText"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AC-Rush. Master algorithms, one problem at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        const problemId = window.location.pathname.split('/').pop();
+        let problem = null;
+        const languageDrafts = {};
+        let activeLanguage = 'python';
+
+        // ─── Load problem ───
+        async function loadProblem() {
+            try {
+                const response = await fetch(`/api/problems/${problemId}`);
+                if (!response.ok) throw new Error('Failed to load problem');
+                problem = await response.json();
+                displayProblem();
+            } catch (error) {
+                console.error('Error loading problem:', error);
+                document.getElementById('problemContent').innerHTML =
+                    '<p style="color: var(--error);">Failed to load problem</p>';
+            }
+        }
+
+        function displayProblem() {
+            const difficultyClass = problem.difficulty.toLowerCase();
+            let html = `
+                <div class="problem-title">
+                    ${escapeHtml(problem.title)}
+                    <span class="difficulty ${difficultyClass}">${problem.difficulty}</span>
+                </div>
+
+                <div class="problem-section">
+                    <span class="section-title">Description</span>
+                    <div class="problem-description">${escapeHtml(problem.description)}</div>
+                </div>
+
+                <div class="problem-section">
+                    <span class="section-title">Constraints</span>
+                    <div class="problem-description">${escapeHtml(problem.constraints)}</div>
+                </div>
+
+                <div class="problem-section">
+                    <span class="section-title">Examples</span>
+            `;
+
+            (problem.examples || []).forEach((example, index) => {
+                const escapedInput = escapeHtml(example.input);
+                const escapedOutput = escapeHtml(example.output);
+                html += `
+                    <div class="example-card">
+                        <div class="example-label">Example ${index + 1}</div>
+                        <div class="io-section">
+                            <div class="io-label">Input:</div>
+                            <pre class="io-block">${escapedInput}</pre>
+                        </div>
+                        <div class="io-section">
+                            <div class="io-label">Output:</div>
+                            <pre class="io-block">${escapedOutput}</pre>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('problemContent').innerHTML = html;
+            
+            // Add copy buttons to any pre elements in description
+            setTimeout(() => {
+                document.querySelectorAll('.problem-description pre').forEach(pre => {
+                    const btn = document.createElement('button');
+                    btn.className = 'copy-btn';
+                    btn.textContent = 'Copy';
+                    btn.onclick = () => {
+                        navigator.clipboard.writeText(pre.innerText);
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => btn.textContent = 'Copy', 2000);
+                    };
+                    pre.appendChild(btn);
+                });
+            }, 100);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // ─── Language switching (save drafts) ───
+        document.getElementById('languageSelect').addEventListener('change', () => {
+            languageDrafts[activeLanguage] = document.getElementById('codeEditor').value;
+            activeLanguage = document.getElementById('languageSelect').value;
+            if (languageDrafts[activeLanguage] !== undefined) {
+                document.getElementById('codeEditor').value = languageDrafts[activeLanguage];
+            } else {
+                document.getElementById('codeEditor').value = '';
+            }
+        });
+
+        // ─── Run code (custom input, raw output) ───
+        async function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            const language = document.getElementById('languageSelect').value;
+            const input = document.getElementById('stdinInput').value;
+
+            if (!code.trim()) {
+                showOutput('Please write some code first!', 'warning');
+                return;
+            }
+
+            setButtonsDisabled(true);
+            showOutput('<span class="loading-spinner"></span> Running code...', 'pending');
+
+            try {
+                const response = await fetch('/api/submissions/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language, input })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to run code');
+                }
+
+                let html = '';
+                const statusClass = data.status === 'Accepted' ? 'accepted' : 'wrong';
+                html += `<div class="status-badge status-${statusClass}">${escapeHtml(data.status)}</div>\n`;
+
+                if (data.executionTime > 0) {
+                    html += `Time: ${data.executionTime}s\n`;
+                }
+
+                if (data.output) {
+                    html += `\nOutput:\n${escapeHtml(data.output)}`;
+                }
+                if (data.error) {
+                    html += `\n\nError:\n${escapeHtml(data.error)}`;
+                }
+
+                showOutput(html, data.status === 'Accepted' ? 'success' : 'error');
+            } catch (error) {
+                showOutput(`Error: ${escapeHtml(error.message)}`, 'error');
+            } finally {
+                setButtonsDisabled(false);
+            }
+        }
+
+        // ─── Submit code (hidden tests, synchronous) ───
+        async function submitCode() {
+            const code = document.getElementById('codeEditor').value;
+            const language = document.getElementById('languageSelect').value;
+
+            if (!code.trim()) {
+                showOutput('Please write some code first!', 'warning');
+                return;
+            }
+
+            setButtonsDisabled(true);
+            showOutput('<span class="loading-spinner"></span> Judging against hidden test cases...', 'pending');
+
+            try {
+                const response = await fetch('/api/submissions/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problemId, code, language })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Submission failed');
+                }
+
+                const statusClass = data.status === 'Accepted' ? 'accepted' : 'wrong';
+                let html = `<div class="status-badge status-${statusClass}">${escapeHtml(data.status)}</div>\n`;
+                html += `Tests Passed: ${data.testsPassed}/${data.totalTests}\n`;
+
+                if (data.executionTime > 0) {
+                    html += `Time: ${data.executionTime}s\n`;
+                }
+
+                if (data.output) {
+                    html += `\n${escapeHtml(data.output)}`;
+                }
+                if (data.error) {
+                    html += `\n\nError:\n${escapeHtml(data.error)}`;
+                }
+
+                showOutput(html, data.status === 'Accepted' ? 'success' : 'error');
+            } catch (error) {
+                showOutput(`Error: ${escapeHtml(error.message)}`, 'error');
+            } finally {
+                setButtonsDisabled(false);
+            }
+        }
+
+        function showOutput(html, type = 'pending') {
+            const section = document.getElementById('outputSection');
+            const outputDiv = document.getElementById('output');
+            outputDiv.className = `output ${type}`;
+            outputDiv.innerHTML = html;
+            section.style.display = 'block';
+        }
+
+        function setButtonsDisabled(disabled) {
+            document.getElementById('btnRun').disabled = disabled;
+            document.getElementById('btnSubmit').disabled = disabled;
+        }
+
+        // ─── AI features (unchanged) ───
+        async function getHint() {
+            showOutput('<span class="loading-spinner"></span> Generating hint...', 'pending');
+            try {
+                const response = await fetch('/api/ai/hint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problemId })
+                });
+                const data = await response.json();
+                showModal('Hint', data.hint);
+            } catch (error) {
+                showOutput(`Error: ${escapeHtml(error.message)}`, 'error');
+            }
+        }
+
+        async function explainCode() {
+            const code = document.getElementById('codeEditor').value;
+            if (!code.trim()) {
+                showOutput('Please write some code first!', 'warning');
+                return;
+            }
+
+            showOutput('<span class="loading-spinner"></span> Generating explanation...', 'pending');
+            try {
+                const response = await fetch('/api/ai/explain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problemId, code, language: document.getElementById('languageSelect').value })
+                });
+                const data = await response.json();
+                showModal('Code Explanation', data.explanation);
+            } catch (error) {
+                showOutput(`Error: ${escapeHtml(error.message)}`, 'error');
+            }
+        }
+
+        function showModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Editor Line Numbers logic
+        const editor = document.getElementById('codeEditor');
+        const lineNumbers = document.getElementById('lineNumbers');
+
+        function updateLineNumbers() {
+            const lines = editor.value.split('\\n').length;
+            let nums = '';
+            for (let i = 1; i <= lines; i++) {
+                nums += i + '\\n';
+            }
+            lineNumbers.textContent = nums;
+        }
+
+        editor.addEventListener('input', updateLineNumbers);
+        editor.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = editor.scrollTop;
+        });
+        
+        // Ensure line numbers initialize correctly
+        setTimeout(updateLineNumbers, 100);
+
+        // Handle tab key in code editor
+        editor.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+                updateLineNumbers();
+            }
+        });
+
+        // Header scroll handler
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+
+        loadProblem();
+    </script>
+</body>
+</html>

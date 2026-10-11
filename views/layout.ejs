@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'AC-Rush - Code & Conquer' %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <a href="/profile" class="nav-btn nav-btn-outline">Profile</a>
+                    <% } else { %>
+                        <a href="/login" class="nav-btn nav-btn-outline">Log In</a>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <%- body %>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AC-Rush. Master algorithms, one problem at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>

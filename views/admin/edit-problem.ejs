@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Edit Problem - AC-Rush Admin</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      background: #0a0e27;
+      color: #e2e8f0;
+    }
+
+    .form-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .form-header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    .form-header h1 {
+      color: #00d4ff;
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .form-card {
+      background: #1a1f3a;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      color: #00d4ff;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2d3748;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #a0aec0;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: #0a0e27;
+      border: 1px solid #2d3748;
+      border-radius: 6px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #00d4ff;
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .test-case-group {
+      background: #0a0e27;
+      border: 1px solid #2d3748;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .test-case-header {
+      color: #00d4ff;
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .checker-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: #00d4ff;
+      color: #0a0e27;
+    }
+
+    .btn-primary:hover {
+      background: #00a8cc;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-secondary {
+      background: #2d3748;
+      color: #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #4a5568;
+    }
+
+    .btn-add {
+      padding: 8px 16px;
+      background: #48bb78;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn-add:hover {
+      background: #38a169;
+    }
+
+    .btn-remove {
+      padding: 8px 16px;
+      background: #f56565;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .btn-remove:hover {
+      background: #e53e3e;
+    }
+
+    .error-message {
+      background: #742a2a;
+      color: #feb2b2;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #f56565;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div class="form-header">
+      <h1>Edit Problem</h1>
+    </div>
+
+    <% if (error) { %>
+      <div class="error-message"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/admin/edit-problem/<%= problem._id %>">
+      <!-- Basic Information -->
+      <div class="form-card">
+        <h2 class="section-title">Basic Information</h2>
+        
+        <div class="form-group">
+          <label for="title">Problem Title *</label>
+          <input type="text" id="title" name="title" value="<%= problem.title %>" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="difficulty">Difficulty *</label>
+            <select id="difficulty" name="difficulty" required>
+              <option value="Easy" <%= problem.difficulty === 'Easy' ? 'selected' : '' %>>Easy</option>
+              <option value="Medium" <%= problem.difficulty === 'Medium' ? 'selected' : '' %>>Medium</option>
+              <option value="Hard" <%= problem.difficulty === 'Hard' ? 'selected' : '' %>>Hard</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <input type="text" id="category" name="category" value="<%= problem.category %>" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea id="description" name="description" required><%= problem.description %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="constraints">Constraints *</label>
+          <textarea id="constraints" name="constraints" required><%= problem.constraints %></textarea>
+        </div>
+      </div>
+
+      <!-- Test Cases -->
+      <div class="form-card">
+        <h2 class="section-title">Example Test Cases</h2>
+        
+        <div id="exampleTestCases">
+          <% problem.examples.forEach((tc, idx) => { %>
+            <div class="test-case-group">
+              <div class="test-case-header">Example Test Case #<%= idx + 1 %></div>
+              <div class="form-row">
+                <div>
+                  <label style="font-size: 12px;">Input</label>
+                  <textarea name="exampleInput" style="height: 80px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;"><%= tc.input %></textarea>
+                </div>
+                <div>
+                  <label style="font-size: 12px;">Output</label>
+                  <textarea name="exampleOutput" style="height: 80px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;"><%= tc.output %></textarea>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        <button type="button" class="btn-add" onclick="addTestCase('example')">+ Add Example Test Case</button>
+      </div>
+
+      <div class="form-card">
+        <h2 class="section-title">Hidden Test Cases</h2>
+        
+        <div id="hiddenTestCases">
+          <% problem.hiddenTestCases.forEach((tc, idx) => { %>
+            <div class="test-case-group">
+              <div class="test-case-header">Hidden Test Case #<%= idx + 1 %></div>
+              <div class="form-row">
+                <div>
+                  <label style="font-size: 12px;">Input</label>
+                  <textarea name="hiddenInput" style="height: 80px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;"><%= tc.input %></textarea>
+                </div>
+                <div>
+                  <label style="font-size: 12px;">Output</label>
+                  <textarea name="hiddenOutput" style="height: 80px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;"><%= tc.output %></textarea>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        <button type="button" class="btn-add" onclick="addTestCase('hidden')">+ Add Hidden Test Case</button>
+      </div>
+      <!-- Starter Code Templates -->
+      <div class="form-card">
+        <h2 class="section-title">Starter Code Templates</h2>
+        <p style="color: #a0aec0; font-size: 12px; margin-bottom: 15px;">
+          Full program templates (stdin/stdout). Users will edit these in the editor.
+        </p>
+
+        <div class="form-group">
+          <label for="starterCodePython">Python Starter Code</label>
+          <textarea id="starterCodePython" name="starterCodePython" rows="6"><%= (problem.starterCode && problem.starterCode.python) || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="starterCodeCpp">C++ Starter Code</label>
+          <textarea id="starterCodeCpp" name="starterCodeCpp" rows="6"><%= (problem.starterCode && problem.starterCode.cpp) || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="starterCodeJava">Java Starter Code</label>
+          <textarea id="starterCodeJava" name="starterCodeJava" rows="6"><%= (problem.starterCode && problem.starterCode.java) || '' %></textarea>
+        </div>
+      </div>
+
+      <!-- Custom Checker -->
+      <div class="form-card">
+        <h2 class="section-title">Custom Checker (Optional)</h2>
+        
+        <div class="checker-toggle">
+          <input type="checkbox" id="useCustomChecker" name="useCustomChecker" class="checkbox" 
+                 <%= problem.useCustomChecker ? 'checked' : '' %> onchange="toggleCheckerSection()">
+          <label for="useCustomChecker">Use Custom Checker Program</label>
+        </div>
+
+        <div id="checkerCodeSection" <%= !problem.useCustomChecker ? 'style="display: none;"' : '' %>>
+          <div class="form-group">
+            <label for="checkerCode">C++ Checker Code</label>
+            <textarea id="checkerCode" name="checkerCode"><%= problem.checkerCode || '' %></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="/admin/dashboard" class="btn btn-secondary" style="text-decoration: none;">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleCheckerSection() {
+      const checkbox = document.getElementById('useCustomChecker');
+      const section = document.getElementById('checkerCodeSection');
+      section.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    function addTestCase(type) {
+      const containerId = type === 'example' ? 'exampleTestCases' : 'hiddenTestCases';
+      const container = document.getElementById(containerId);
+      const count = container.querySelectorAll('.test-case-group').length + 1;
+      
+      const html = `
+        <div class="test-case-group">
+          <div class="test-case-header">${type === 'example' ? 'Example' : 'Hidden'} Test Case #${count}</div>
+          <div class="form-row">
+            <div>
+              <label style="font-size: 12px;">Input</label>
+              <textarea name="${type}Input" style="height: 80px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;" placeholder="Enter input"></textarea>
+            </div>
+            <div>
+              <label style="font-size: 12px;">Output</label>
+              <textarea name="${type}Output" style="height: 80px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;" placeholder="Enter expected output"></textarea>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      container.insertAdjacentHTML('beforeend', html);
+    }
+  </script>
+</body>
+</html>

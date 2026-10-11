@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AC-Rush</title>
+    <meta name="description" content="Create your AC-Rush account and start mastering algorithms and data structures.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/login" class="nav-btn nav-btn-outline">Log In</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-page">
+        <div class="auth-form-section">
+            <div class="auth-form-container">
+                <h1>Create your account</h1>
+                <p class="auth-subtitle">Join the community and start solving</p>
+
+                <div id="authError" class="auth-error"></div>
+
+                <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Choose a username" required minlength="3" maxlength="30">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="At least 6 characters" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn" id="signupBtn">Create Account</button>
+                </form>
+
+                <div class="auth-switch">
+                    Already have an account? <a href="/login">Log in</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-inspire-section">
+            <div class="inspire-content">
+                <div class="inspire-tag">Why AC-Rush?</div>
+                <h2>Your Path to Mastering Algorithms</h2>
+                <p>
+                    Competitive Programming (CP) is the art of solving complex problems under constraints. It sharpens your logical thinking and coding speed.
+                </p>
+                <p>
+                    Data Structures & Algorithms (DSA) form the backbone of computer science. Mastering them opens doors to top tech companies and builds the problem-solving foundation every engineer needs.
+                </p>
+                <div class="inspire-quote">
+                    "Every expert was once a beginner. Start solving today and see the difference practice makes."
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function handleSignup(e) {
+            e.preventDefault();
+            const btn = document.getElementById('signupBtn');
+            const errorEl = document.getElementById('authError');
+            errorEl.classList.remove('visible');
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !email || !password) {
+                errorEl.textContent = 'Please fill in all fields';
+                errorEl.classList.add('visible');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            try {
+                const response = await fetch('/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Signup failed');
+                }
+
+                window.location.href = '/';
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.add('visible');
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>

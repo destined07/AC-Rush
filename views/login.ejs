@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AC-Rush</title>
+    <meta name="description" content="Log in to AC-Rush — your premium competitive programming and DSA practice platform.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/signup" class="nav-btn nav-btn-primary">Sign Up</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-page">
+        <div class="auth-form-section">
+            <div class="auth-form-container">
+                <h1>Welcome back</h1>
+                <p class="auth-subtitle">Log in to continue your journey</p>
+
+                <div id="authError" class="auth-error"></div>
+
+                <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="identifier">Username or Email</label>
+                        <input type="text" id="identifier" class="form-input" placeholder="Enter your username or email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn" id="loginBtn">Log In</button>
+                </form>
+
+                <div class="auth-switch">
+                    Don't have an account? <a href="/signup">Create one</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-inspire-section">
+            <div class="inspire-content">
+                <div class="inspire-tag">Competitive Programming & DSA</div>
+                <h2>Sharpen Your Problem-Solving Skills</h2>
+                <p>
+                    Practice Data Structures & Algorithms, master problem solving, and prepare for contests and technical interviews — all in one elegant platform.
+                </p>
+                <p>
+                    From arrays and trees to dynamic programming and graphs — build the foundation that top engineers rely on.
+                </p>
+                <div class="inspire-quote">
+                    "The best way to learn algorithms is to solve problems. The best way to solve problems is to practice deliberately."
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('authError');
+            errorEl.classList.remove('visible');
+
+            const identifier = document.getElementById('identifier').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!identifier || !password) {
+                errorEl.textContent = 'Please fill in all fields';
+                errorEl.classList.add('visible');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+
+                window.location.href = '/';
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.add('visible');
+                btn.disabled = false;
+                btn.textContent = 'Log In';
+            }
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>

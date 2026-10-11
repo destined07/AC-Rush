@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= profileUser.username %> — Profile - AC-Rush</title>
+    <meta name="description" content="Your AC-Rush profile — track your progress and solved problems.">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">AC-Rush</a>
+                <nav>
+                    <a href="/">Problems</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/profile" class="nav-btn nav-btn-outline" style="border-color: rgba(255,255,255,0.15);">Profile</a>
+                    <a href="/auth/logout" class="nav-btn nav-btn-outline">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="profile-header">
+                <h1><%= profileUser.username %></h1>
+                <p class="profile-email"><%= profileUser.email %></p>
+                <p class="profile-joined">Member since <%= new Date(profileUser.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card stat-total">
+                    <span class="stat-value"><%= (profileUser.counts.easy + profileUser.counts.medium + profileUser.counts.hard) %></span>
+                    <span class="stat-label">Total Solved</span>
+                </div>
+                <div class="stat-card stat-easy">
+                    <span class="stat-value"><%= profileUser.counts.easy %></span>
+                    <span class="stat-label">Easy</span>
+                </div>
+                <div class="stat-card stat-medium">
+                    <span class="stat-value"><%= profileUser.counts.medium %></span>
+                    <span class="stat-label">Medium</span>
+                </div>
+                <div class="stat-card stat-hard">
+                    <span class="stat-value"><%= profileUser.counts.hard %></span>
+                    <span class="stat-label">Hard</span>
+                </div>
+            </div>
+
+            <% if (profileUser.solvedProblems && profileUser.solvedProblems.length > 0) { %>
+            <div class="solved-section">
+                <h2>Solved Problems</h2>
+                <div class="solved-list">
+                    <% profileUser.solvedProblems.forEach(function(problem) { %>
+                    <a href="/problem/<%= problem._id %>" class="solved-item">
+                        <span class="solved-item-title"><%= problem.title %></span>
+                        <div class="solved-item-meta">
+                            <span class="badge badge-<%= problem.difficulty.toLowerCase() %>"><%= problem.difficulty %></span>
+                            <span class="badge badge-category"><%= problem.category %></span>
+                        </div>
+                    </a>
+                    <% }); %>
+                </div>
+            </div>
+            <% } else { %>
+            <div style="text-align: center; padding: 48px 0; color: var(--text-muted);">
+                <p style="font-size: 18px; margin-bottom: 8px;">No problems solved yet</p>
+                <p style="font-size: 14px;">Start solving problems to track your progress here</p>
+                <a href="/" class="btn btn-primary" style="margin-top: 20px;">Browse Problems</a>
+            </div>
+            <% } %>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 AC-Rush. Master algorithms, one problem at a time.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) header.classList.toggle('scrolled', window.scrollY > 10);
+        });
+    </script>
+</body>
+</html>
