@@ -112,9 +112,9 @@ router.post('/submit', async (req, res) => {
     });
     await submission.save();
 
-    if (finalStatus === 'Accepted' && req.session && req.session.userId) {
+    if (finalStatus === 'Accepted' && req.user && req.user.id) {
       try {
-        const user = await User.findById(req.session.userId);
+        const user = await User.findById(req.user.id);
         if (user && !user.solvedProblems.includes(problemId)) {
           user.solvedProblems.push(problemId);
           const diff = problem.difficulty.toLowerCase();

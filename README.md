@@ -34,7 +34,7 @@ A web-based platform for solving algorithmic coding problems with real-time code
    ONECOMPILER_KEY=your_onecompiler_api_key
    OPENROUTER_KEY=your_openrouter_api_key
    OPENROUTER_MODEL=openai/gpt-4o-mini
-   SESSION_SECRET=your_session_secret
+   JWT_SECRET=your_jwt_secret_key
    PORT=3000
    ```
 

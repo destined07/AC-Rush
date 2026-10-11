@@ -2,17 +2,21 @@ import express from 'express';
 import Admin from '../models/Admin.js';
 import Problem from '../models/Problem.js';
 import Submission from '../models/Submission.js';
+import { signToken, ADMIN_COOKIE_NAME, COOKIE_OPTIONS } from '../utils/jwt.js';
 
 const router = express.Router();
 
 const requireAdmin = (req, res, next) => {
-  if (!req.session || !req.session.adminId) {
+  if (!req.admin || !req.admin.adminId) {
     return res.redirect('/admin/login');
   }
   next();
 };
 
 router.get('/login', (req, res) => {
+  if (req.admin && req.admin.adminId) {
+    return res.redirect('/admin/dashboard');
+  }
   res.render('admin/login', { error: null });
 });
 
@@ -36,8 +40,13 @@ router.post('/login', async (req, res) => {
       return res.render('admin/login', { error: 'Invalid credentials' });
     }
 
-    req.session.adminId = admin._id;
-    req.session.username = admin.username;
+    const token = signToken({
+      adminId: admin._id.toString(),
+      username: admin.username,
+      role: 'admin'
+    });
+
+    res.cookie(ADMIN_COOKIE_NAME, token, COOKIE_OPTIONS);
 
     res.redirect('/admin/dashboard');
   } catch (error) {
@@ -47,12 +56,12 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    res.redirect('/admin/login');
+  res.clearCookie(ADMIN_COOKIE_NAME, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
   });
+  res.redirect('/admin/login');
 });
 
 router.get('/dashboard', requireAdmin, async (req, res) => {
@@ -63,7 +72,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
     res.render('admin/dashboard', {
       problems,
       totalSubmissions,
-      username: req.session.username
+      username: req.admin.username
     });
   } catch (error) {
     console.error('Dashboard error:', error);

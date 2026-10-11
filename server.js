@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import { attachUserFromToken, USER_COOKIE_NAME } from './utils/jwt.js';
 import Admin from './models/Admin.js';
 import User from './models/User.js';
 import Problem from './models/Problem.js';
@@ -21,26 +22,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'algoforge-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
-
-app.use((req, res, next) => {
-  res.locals.user = req.session.userId ? {
-    id: req.session.userId,
-    username: req.session.username
-  } : null;
-  next();
-});
+app.use(attachUserFromToken);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -81,7 +66,7 @@ app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
-  if (!req.session.userId) return res.redirect('/login');
+  if (!req.user) return res.redirect('/login');
   res.render('index');
 });
 
@@ -90,23 +75,23 @@ app.get('/problem/:id', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  if (req.session.userId) return res.redirect('/profile');
+  if (req.user) return res.redirect('/profile');
   res.render('login');
 });
 
 app.get('/signup', (req, res) => {
-  if (req.session.userId) return res.redirect('/profile');
+  if (req.user) return res.redirect('/profile');
   res.render('signup');
 });
 
 app.get('/profile', async (req, res) => {
-  if (!req.session.userId) return res.redirect('/login');
+  if (!req.user) return res.redirect('/login');
   try {
-    const user = await User.findById(req.session.userId)
+    const user = await User.findById(req.user.id)
       .populate('solvedProblems', 'title difficulty category')
       .lean();
     if (!user) {
-      req.session.destroy();
+      res.clearCookie(USER_COOKIE_NAME);
       return res.redirect('/login');
     }
     res.render('profile', { profileUser: user });

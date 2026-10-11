@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User.js';
+import { signToken, USER_COOKIE_NAME, COOKIE_OPTIONS } from '../utils/jwt.js';
 
 const router = express.Router();
 
@@ -31,8 +32,13 @@ router.post('/signup', async (req, res) => {
     const user = new User({ username, email, password });
     await user.save();
 
-    req.session.userId = user._id;
-    req.session.username = user.username;
+    const token = signToken({
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email
+    });
+
+    res.cookie(USER_COOKIE_NAME, token, COOKIE_OPTIONS);
 
     res.json({ success: true, user: { username: user.username, email: user.email } });
   } catch (error) {
@@ -65,8 +71,13 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    req.session.userId = user._id;
-    req.session.username = user.username;
+    const token = signToken({
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email
+    });
+
+    res.cookie(USER_COOKIE_NAME, token, COOKIE_OPTIONS);
 
     res.json({ success: true, user: { username: user.username, email: user.email } });
   } catch (error) {
@@ -76,18 +87,21 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) console.error('Logout error:', err);
-    res.redirect('/');
+  res.clearCookie(USER_COOKIE_NAME, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
   });
+  res.redirect('/');
 });
 
 router.get('/me', async (req, res) => {
-  if (!req.session.userId) {
+  const userId = req.user?.id;
+  if (!userId) {
     return res.json({ user: null });
   }
   try {
-    const user = await User.findById(req.session.userId)
+    const user = await User.findById(userId)
       .select('username email solvedProblems counts createdAt')
       .lean();
     res.json({ user });
